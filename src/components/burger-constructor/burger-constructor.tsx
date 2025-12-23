@@ -1,24 +1,34 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
+import { useAppDispatch, useAppSelector } from '../../services/store';
+import { createOrder, hideOrderModal } from '../../services/slices/orderSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
+  const dispatch = useAppDispatch();
+  const bun = useAppSelector((state) => state.constructorIngredients.bun);
+  const ingredients = useAppSelector(
+    (state) => state.constructorIngredients.ingredients
+  );
   const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
+    bun,
+    ingredients
   };
 
-  const orderRequest = false;
+  const orderRequest = useAppSelector((state) => state.order.orderRequest);
 
-  const orderModalData = null;
+  const orderModalData = useAppSelector((state) => state.order.orderModalData);
 
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
+    if (!bun || orderRequest) return;
+    const ingredientIds = [bun._id, ...ingredients.map((i) => i._id), bun._id];
+    dispatch(createOrder(ingredientIds));
   };
-  const closeOrderModal = () => {};
+
+  const closeOrderModal = () => {
+    dispatch(hideOrderModal());
+  };
 
   const price = useMemo(
     () =>
@@ -29,8 +39,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  return null;
 
   return (
     <BurgerConstructorUI

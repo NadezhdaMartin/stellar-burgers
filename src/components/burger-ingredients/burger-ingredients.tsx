@@ -1,14 +1,28 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { TTabMode } from '@utils-types';
+import { TConstructorIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useAppSelector } from '../../services/store';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  const allIngredients: TConstructorIngredient[] = useAppSelector(
+    (state) => state.ingredientsFetch.ingredients
+  );
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleOpenModal = (id: string) => {
+    navigate(`/ingredients/${id}`, {
+      state: { backgroundLocation: location }
+    });
+  };
+
+  const buns = allIngredients.filter((item) => item.type === 'bun');
+  const mains = allIngredients.filter((item) => item.type === 'main');
+  const sauces = allIngredients.filter((item) => item.type === 'sauce');
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -47,8 +61,6 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return null;
-
   return (
     <BurgerIngredientsUI
       currentTab={currentTab}
@@ -62,6 +74,7 @@ export const BurgerIngredients: FC = () => {
       mainsRef={mainsRef}
       saucesRef={saucesRef}
       onTabClick={onTabClick}
+      onIngredientClick={handleOpenModal}
     />
   );
 };
