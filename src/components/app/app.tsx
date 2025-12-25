@@ -1,14 +1,15 @@
-import { ConstructorPage } from '@pages';
+import { ConstructorPage, Feed } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
 
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import {
-  AppHeader,
-  BurgerIngredient,
-  IngredientDetails,
-  Modal
-} from '@components';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import { FC, useEffect, useState } from 'react';
 import {
   RootState,
@@ -16,7 +17,20 @@ import {
   useAppSelector
 } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
-import { BurgerIngredientUI, Preloader } from '@ui';
+import { Preloader } from '@ui';
+
+//для получения номера заказа для title в модальном окне
+const OrderInfoModal: FC = () => {
+  const { number } = useParams<{ number: string }>();
+  const navigate = useNavigate();
+  const title = number ? `#${number.padStart(6, '0')}` : 'Заказ';
+
+  return (
+    <Modal title={title} onClose={() => navigate(-1)}>
+      <OrderInfo isModal />
+    </Modal>
+  );
+};
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +41,7 @@ const App: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const backgroundLocation = location.state?.backgroundLocation;
+  const backgroundLocation = location.state?.background;
 
   useEffect(() => {
     if (!hasFetched) {
@@ -49,6 +63,8 @@ const App: FC = () => {
           path='/ingredients/:id'
           element={<IngredientDetails isModal={false} />}
         />
+        <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo isModal={false} />} />
       </Routes>
       {backgroundLocation && (
         <Routes>
@@ -60,6 +76,7 @@ const App: FC = () => {
               </Modal>
             }
           />
+          <Route path='/feed/:number' element={<OrderInfoModal />} />
         </Routes>
       )}
     </div>

@@ -10,12 +10,14 @@ import {
 import constructorReducer from './slices/constructorSlice';
 import ingredientsReducer from './slices/ingredientsSlice';
 import orderReducer from './slices/orderSlice';
+import feedReducer from './slices/feedSlice';
 
 const store = configureStore({
   reducer: {
     constructorIngredients: constructorReducer,
     ingredientsFetch: ingredientsReducer,
-    order: orderReducer
+    order: orderReducer,
+    feed: feedReducer
   },
   devTools: process.env.NODE_ENV !== 'production'
 });
