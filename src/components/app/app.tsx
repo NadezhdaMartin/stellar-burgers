@@ -1,4 +1,11 @@
-import { ConstructorPage, Feed } from '@pages';
+import {
+  ConstructorPage,
+  Feed,
+  ForgotPassword,
+  Login,
+  Register,
+  ResetPassword
+} from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
 
@@ -18,6 +25,8 @@ import {
 } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { Preloader } from '@ui';
+import { ProtectedRoute } from '../protected-route/protected-route';
+import { checkUserAuth } from '../../services/slices/userSlice';
 
 //для получения номера заказа для title в модальном окне
 const OrderInfoModal: FC = () => {
@@ -50,6 +59,11 @@ const App: FC = () => {
     }
   }, [dispatch, hasFetched]);
 
+  //проверка токенов
+  useEffect(() => {
+    dispatch(checkUserAuth());
+  }, []);
+
   if (isIngredientsLoading && !hasFetched) {
     return <Preloader />;
   }
@@ -65,6 +79,22 @@ const App: FC = () => {
         />
         <Route path='/feed' element={<Feed />} />
         <Route path='/feed/:number' element={<OrderInfo isModal={false} />} />
+        <Route
+          path='/login'
+          element={<ProtectedRoute onlyUnAuth children={<Login />} />}
+        />
+        <Route
+          path='/register'
+          element={<ProtectedRoute onlyUnAuth children={<Register />} />}
+        />
+        <Route
+          path='/forgot-password'
+          element={<ProtectedRoute onlyUnAuth children={<ForgotPassword />} />}
+        />
+        <Route
+          path='/reset-password'
+          element={<ProtectedRoute onlyUnAuth children={<ResetPassword />} />}
+        />
       </Routes>
       {backgroundLocation && (
         <Routes>
