@@ -1,7 +1,6 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useAppDispatch } from '../../services/store';
-import { useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import {
   getError,
   getIsAuthChecked,
@@ -15,9 +14,9 @@ export const Login: FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const isAuthChecked = useSelector(getIsAuthChecked);
-  const error = useSelector(getError);
-  const user = useSelector(getUser);
+  const isAuthChecked = useAppSelector(getIsAuthChecked);
+  const error = useAppSelector(getError);
+  const user = useAppSelector(getUser);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();

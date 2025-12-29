@@ -1,14 +1,13 @@
 import { ProfileUI } from '@ui-pages';
 import { TUser } from '@utils-types';
 import { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { getUser, updateUserData } from '../../services/slices/userSlice';
-import { useAppDispatch } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { TRegisterData } from '@api';
 
 export const Profile: FC = () => {
   /** TODO: взять переменную из стора */
-  const userData = useSelector(getUser);
+  const userData = useAppSelector(getUser);
   const dispatch = useAppDispatch();
 
   // сравнение текущего значения с тем, что было при открытии формы, а не с текущим значением из стора.создаёт мутабельный объект, который сохраняется между ререндерами и не вызывает перерисовку при изменении

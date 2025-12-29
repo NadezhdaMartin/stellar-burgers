@@ -16,13 +16,16 @@ const initialState: TConstructorState = {
 };
 
 export const fetchIngredients = createAsyncThunk<
-  TIngredient[],
+  (TIngredient & { id: string })[],
   void,
   { rejectValue: string }
 >(`${INGREDIENTS_SLICE_NAME}/fetch`, async (_, { rejectWithValue }) => {
   try {
     const ingredients = await getIngredientsApi();
-    return ingredients;
+    return ingredients.map((ingredient) => ({
+      ...ingredient,
+      id: crypto.randomUUID() //т.к. из API возвращает без id
+    }));
   } catch (error) {
     return rejectWithValue(
       error instanceof Error ? error.message : 'Unknown error'
@@ -42,10 +45,7 @@ const constructorSlice = createSlice({
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
         state.loading = false;
-        state.ingredients = action.payload.map((ingredient) => ({
-          ...ingredient,
-          id: crypto.randomUUID()
-        })); //т.к. из API возвращает без id
+        state.ingredients = action.payload;
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.loading = false;
