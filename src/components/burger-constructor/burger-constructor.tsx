@@ -1,10 +1,11 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import { createOrder, hideOrderModal } from '../../services/slices/orderSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getIsAuthChecked, getUser } from '../../services/slices/userSlice';
+import { clearConstructor } from '../../services/slices/constructorSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
@@ -26,6 +27,12 @@ export const BurgerConstructor: FC = () => {
   const orderRequest = useAppSelector((state) => state.order.orderRequest);
 
   const orderModalData = useAppSelector((state) => state.order.orderModalData);
+
+  useEffect(() => {
+    if (orderModalData !== null) {
+      dispatch(clearConstructor());
+    }
+  }, [orderModalData, dispatch]);
 
   const onOrderClick = () => {
     if (!isAuthChecked) return;

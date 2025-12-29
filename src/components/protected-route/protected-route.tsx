@@ -27,9 +27,5 @@ export const ProtectedRoute = ({
     return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
-  //пользователь авторизован и должен быть авторизован
-
-  //пользователь не авторизован и не должен быть авторизован
-
   return children;
 };
