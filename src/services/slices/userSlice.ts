@@ -4,12 +4,14 @@ import {
   getUserApi,
   loginUserApi,
   logoutApi,
+  refreshToken,
   registerUserApi,
-  resetPasswordApi,
   TLoginData,
-  TRegisterData
+  TRegisterData,
+  updateUserApi
 } from '@api';
 import { TUser } from '@utils-types';
+import { deleteCookie, setCookie } from '../../utils/cookie';
 
 export const login = createAsyncThunk(
   `${USER_SLICE_NAME}/login`,
@@ -26,29 +28,28 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk(
   `${USER_SLICE_NAME}/logout`,
   async (_, { dispatch }) => {
-    await logoutApi();
-    dispatch(setUser(null));
+    try {
+      await logoutApi();
+    } finally {
+      // Всегда очищаем клиентские данные
+      localStorage.removeItem('refreshToken');
+      deleteCookie('accessToken');
+      dispatch(setUser(null));
+    }
   }
 );
 
-const isTokenExists = () => localStorage.getItem('accessToken') !== null;
-
 export const checkUserAuth = createAsyncThunk(
   `${USER_SLICE_NAME}/checkAuth`,
-  async (_, { dispatch }) => {
-    if (!isTokenExists()) {
-      dispatch(setIsAuthChecked(true));
-      return null;
-    }
-
+  async (_, { dispatch, rejectWithValue }) => {
     try {
       const response = await getUserApi();
-      dispatch(setUser(response.user));
+      // fetchWithRefresh уже обновил токены, если нужно
+      return response.user;
     } catch (error) {
-      localStorage.removeItem('accessToken');
-      dispatch(setUser(null));
-    } finally {
-      dispatch(setIsAuthChecked(true));
+      // Если даже после refresh ошибка — пользователь не авторизован
+      dispatch(logout());
+      return rejectWithValue(error);
     }
   }
 );
@@ -58,6 +59,18 @@ export const register = createAsyncThunk(
   async (registerData: TRegisterData, { rejectWithValue }) => {
     try {
       const response = await registerUserApi(registerData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateUserData = createAsyncThunk(
+  `${USER_SLICE_NAME}/updateUserData`,
+  async (user: Partial<TRegisterData>, { rejectWithValue }) => {
+    try {
+      const response = await updateUserApi(user);
       return response;
     } catch (error) {
       return rejectWithValue(error);
@@ -96,15 +109,22 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        const { user, accessToken, refreshToken } = action.payload;
+        localStorage.setItem('refreshToken', refreshToken);
+        setCookie('accessToken', accessToken);
+        state.user = user;
         state.isAuthChecked = true;
+        state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.error = (action.payload as string) || 'Unknown error';
         state.isAuthChecked = true;
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        const { user, accessToken, refreshToken } = action.payload;
+        localStorage.setItem('refreshToken', refreshToken);
+        setCookie('accessToken', accessToken);
+        state.user = user;
         state.isAuthChecked = true;
         state.error = null;
       })
@@ -112,9 +132,22 @@ export const userSlice = createSlice({
         state.error = (action.payload as string) || 'Ошибка регистрации';
         state.isAuthChecked = true;
       })
+      .addCase(updateUserData.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.error = null;
+      })
+      .addCase(checkUserAuth.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isAuthChecked = true;
+      })
+      .addCase(checkUserAuth.rejected, (state) => {
+        state.user = null;
+        state.isAuthChecked = true;
+      })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.error = null;
+        state.isAuthChecked = true;
       });
   }
 });

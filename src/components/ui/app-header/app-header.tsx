@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from './app-header.module.css';
 import { TAppHeaderUIProps } from './type';
 import {
@@ -7,17 +7,15 @@ import {
   Logo,
   ProfileIcon
 } from '@zlden/react-developer-burger-ui-components';
-import { NavLink, useLocation } from 'react-router-dom';
+import { matchPath, NavLink, useLocation } from 'react-router-dom';
 
 export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
   const { pathname } = useLocation();
 
-  //конструктор должен оставаться активным на путях
-  const getConstructorActive = (pathname: string) =>
-    pathname === '/' ||
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/register');
-  const constructorActive = getConstructorActive(pathname);
+  //Проверяем, совпадает ли текущий путь с любым из шаблонов конструктора
+  const constructorActive =
+    matchPath('/', pathname) !== null ||
+    matchPath('/ingredients/:id', pathname) !== null;
 
   return (
     <header className={styles.header}>
@@ -28,7 +26,6 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
             className={({ isActive }) =>
               `${styles.link} ${constructorActive ? styles.link_active : ''}`
             }
-            end
           >
             <BurgerIcon type={'primary'} />
             <p className='text text_type_main-default ml-2 mr-10'>
@@ -49,7 +46,12 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => {
           <Logo className='' />
         </div>
         <div className={styles.link_position_last}>
-          <NavLink to='/login' className={styles.link}>
+          <NavLink
+            to='/profile'
+            className={({ isActive }) =>
+              `${styles.link} ${isActive ? styles.link_active : ''}`
+            }
+          >
             <ProfileIcon type={'primary'} />
             <p className='text text_type_main-default ml-2'>
               {userName || 'Личный кабинет'}

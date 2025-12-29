@@ -12,6 +12,7 @@ import ingredientsReducer from './slices/ingredientsSlice';
 import orderReducer from './slices/orderSlice';
 import feedReducer from './slices/feedSlice';
 import userReducer from './slices/userSlice';
+import userOrdersReducer from './slices/userOrdersSlice';
 
 const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ const store = configureStore({
     ingredientsFetch: ingredientsReducer,
     order: orderReducer,
     feed: feedReducer,
-    user: userReducer
+    user: userReducer,
+    userOrders: userOrdersReducer
   },
   devTools: process.env.NODE_ENV !== 'production'
 });

@@ -3,6 +3,9 @@ import {
   Feed,
   ForgotPassword,
   Login,
+  NotFound404,
+  Profile,
+  ProfileOrders,
   Register,
   ResetPassword
 } from '@pages';
@@ -62,7 +65,7 @@ const App: FC = () => {
   //проверка токенов
   useEffect(() => {
     dispatch(checkUserAuth());
-  }, []);
+  }, [dispatch]);
 
   if (isIngredientsLoading && !hasFetched) {
     return <Preloader />;
@@ -95,6 +98,19 @@ const App: FC = () => {
           path='/reset-password'
           element={<ProtectedRoute onlyUnAuth children={<ResetPassword />} />}
         />
+        <Route
+          path='/profile'
+          element={<ProtectedRoute children={<Profile />} />}
+        />
+        <Route
+          path='/profile/orders'
+          element={<ProtectedRoute children={<ProfileOrders />} />}
+        />
+        <Route
+          path='/profile/orders/:number'
+          element={<ProtectedRoute children={<OrderInfo isModal={false} />} />}
+        />
+        <Route path='*' element={<NotFound404 />} />
       </Routes>
       {backgroundLocation && (
         <Routes>
@@ -107,6 +123,10 @@ const App: FC = () => {
             }
           />
           <Route path='/feed/:number' element={<OrderInfoModal />} />
+          <Route
+            path='/profile/orders/:number'
+            element={<ProtectedRoute children={<OrderInfoModal />} />}
+          />
         </Routes>
       )}
     </div>

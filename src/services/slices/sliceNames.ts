@@ -3,3 +3,4 @@ export const INGREDIENTS_SLICE_NAME = 'getIngredients';
 export const ORDER_SLICE_NAME = 'createOrder';
 export const FEED_ORDERS_SLICE_NAME = 'feedOrders';
 export const USER_SLICE_NAME = 'user';
+export const USER_ORDERS_SLICE_NAME = 'userOrders';
