@@ -7,16 +7,18 @@ import { addIngredient } from '../../services/slices/constructorSlice';
 import { useAppDispatch } from '../../services/store';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
-  ({ ingredient, count, onClick }) => {
+  ({ ingredient, count, onClick, dataCy }) => {
     const location = useLocation();
     const dispatch = useAppDispatch();
 
-    const handleAdd = () => {
+    const handleAdd = (e: React.MouseEvent) => {
+      e.stopPropagation();
       dispatch(addIngredient(ingredient));
     };
 
     return (
       <BurgerIngredientUI
+        dataCy={dataCy}
         onClick={onClick}
         ingredient={ingredient}
         count={count}

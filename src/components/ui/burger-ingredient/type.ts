@@ -5,6 +5,7 @@ export type TBurgerIngredientUIProps = {
   ingredient: TIngredient;
   count: number;
   locationState: { background: Location };
-  handleAdd: () => void;
+  handleAdd: (e: React.MouseEvent) => void;
   onClick?: () => void;
+  dataCy?: string;
 };
