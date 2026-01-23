@@ -117,7 +117,11 @@ const App: FC = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
+              <Modal
+                dataCy='ingredient-modal'
+                title='Детали ингредиента'
+                onClose={() => navigate(-1)}
+              >
                 <IngredientDetails isModal />
               </Modal>
             }
