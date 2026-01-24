@@ -35,6 +35,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            data-cy='user-name'
           />
         </div>
         <div className='pb-6'>
