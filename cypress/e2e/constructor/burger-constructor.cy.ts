@@ -1,17 +1,19 @@
 describe('Burger Constructor', () => {
   beforeEach(() => {
-    cy.intercept('GET', '**/api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
+    cy.intercept('GET', '**/api/ingredients', {
+      fixture: 'ingredients.json'
+    }).as('getIngredients');
     cy.visit('/');
     cy.wait('@getIngredients');
   });
 
   it('should add an ingredient to the constructor when clicked', () => {
-    //IngredientsCategoryUI добавлен атрибут, далее передала через ...rest
+    //IngredientsCategoryUI добавлен атрибут, далее передала через props
     cy.contains('[data-cy="ingredient-item"]', 'Говяжий метеорит (отбивная)')
       .scrollIntoView()
       .within(() => {
-      // .within() ограничивает поиск только внутри найденной карточки
-      cy.contains('button', 'Добавить').click();
+        // .within() ограничивает поиск только внутри найденной карточки
+        cy.contains('button', 'Добавить').click();
       });
 
     // BurgerConstructorUI добавлен атрибут; проверка, что ингредиент появился в конструкторе
@@ -29,7 +31,11 @@ describe('Burger Constructor', () => {
       });
 
     // BurgerConstructorUI добавлены атрибуты; проверка, что булка отображается сверху и снизу
-    cy.get('[data-cy="constructor-bun-top"]').contains('Флюоресцентная булка R2-D3');
-    cy.get('[data-cy="constructor-bun-bottom"]').contains('Флюоресцентная булка R2-D3');
+    cy.get('[data-cy="constructor-bun-top"]').contains(
+      'Флюоресцентная булка R2-D3'
+    );
+    cy.get('[data-cy="constructor-bun-bottom"]').contains(
+      'Флюоресцентная булка R2-D3'
+    );
   });
 });

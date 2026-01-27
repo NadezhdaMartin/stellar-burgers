@@ -1,7 +1,9 @@
 describe('Burger Ingredients', () => {
   beforeEach(() => {
     // перехват запроса на эндпоинт 'api/ingredients’, в ответе на который возвращаются созданные ранее моковые данные
-    cy.intercept('GET', '**/api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
+    cy.intercept('GET', '**/api/ingredients', {
+      fixture: 'ingredients.json'
+    }).as('getIngredients');
 
     // Посещаем страницу
     cy.visit('/');

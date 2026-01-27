@@ -25,7 +25,7 @@ type TCreateOrder = {
   orderError: null | string;
 };
 
-const initialState: TCreateOrder = {
+export const initialState: TCreateOrder = {
   orderRequest: false,
   orderModalData: null,
   orderError: null
