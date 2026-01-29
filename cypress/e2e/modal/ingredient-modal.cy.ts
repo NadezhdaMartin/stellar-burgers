@@ -4,7 +4,6 @@ describe('Burger Constructor', () => {
       fixture: 'ingredients.json'
     }).as('getIngredients');
     cy.visit('/');
-    cy.wait('@getIngredients');
   });
 
   it('should open in modal', () => {

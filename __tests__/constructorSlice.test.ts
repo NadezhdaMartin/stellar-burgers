@@ -1,4 +1,5 @@
-import { addIngredient, initialState, moveIngredientDown, moveIngredientUp, removeIngredient, TConstructorState } from '../src/services/slices/constructorSlice';
+import { clear } from 'console';
+import { addIngredient, clearConstructor, initialState, moveIngredientDown, moveIngredientUp, removeIngredient, TConstructorState } from '../src/services/slices/constructorSlice';
 import constructorReducer from '../src/services/slices/constructorSlice';
 
 const bun = {
@@ -134,6 +135,10 @@ describe('constructorSlice', () => {
     });
   });
 
+  test('clear constructor', () => {
+    let newState = constructorReducer(initialState, clearConstructor());
+    expect(newState).toEqual(initialState);
+  });
 });
 
 

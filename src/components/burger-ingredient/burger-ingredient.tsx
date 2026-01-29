@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, SyntheticEvent } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { BurgerIngredientUI } from '@ui';
@@ -11,7 +11,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const location = useLocation();
     const dispatch = useAppDispatch();
 
-    const handleAdd = (e: React.MouseEvent) => {
+    const handleAdd = (e: SyntheticEvent) => {
       e.stopPropagation();
       dispatch(addIngredient(ingredient));
     };
