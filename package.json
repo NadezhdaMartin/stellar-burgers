@@ -90,6 +90,7 @@
   },
   "scripts": {
     "start": "webpack serve --mode=development",
+    "build": "webpack --mode production",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "storybook": "storybook dev -p 6006",
